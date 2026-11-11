@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<title>Ερωτηματολόγιο για γονείς</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@500;600;700&family=Noto+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: one working column; clinician screens are tables and forms, patient screens are large-tap questionnaires. */
+*{box-sizing:border-box}
+:root{
+  --bg:#F3F5F7; --surface:#FFFFFF; --sunk:#E8ECF0; --fg:#17212B; --muted:#5A6672; --line:#D5DCE3;
+  --accent:#3A5A80; --accent-ink:#FFFFFF; --accent-soft:#DDE6F0;
+  --good:#2D7A57; --warn:#9E6A12; --bad:#B03A3A; --good-soft:#DDEFE6; --warn-soft:#F6EAD4; --bad-soft:#F5DEDE;
+  --f-display:"Commissioner","Noto Sans",system-ui,sans-serif;
+  --f-body:"Noto Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:10px; color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0F151B; --surface:#17202A; --sunk:#1E2934; --fg:#E4EAF0; --muted:#98A5B2; --line:#2B3845;
+  --accent:#86ABD6; --accent-ink:#0F151B; --accent-soft:#22344A;
+  --good:#6CC59A; --warn:#E0AE5A; --bad:#E58383; --good-soft:#163428; --warn-soft:#3A2D16; --bad-soft:#3D1F1F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0F151B; --surface:#17202A; --sunk:#1E2934; --fg:#E4EAF0; --muted:#98A5B2; --line:#2B3845;
+  --accent:#86ABD6; --accent-ink:#0F151B; --accent-soft:#22344A;
+  --good:#6CC59A; --warn:#E0AE5A; --bad:#E58383; --good-soft:#163428; --warn-soft:#3A2D16; --bad-soft:#3D1F1F; color-scheme:dark}
+html,body{background:var(--bg);color:var(--fg);margin:0}
+body{font-family:var(--f-body);font-size:15px;line-height:1.5;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 48px}
+.wrap{max-width:960px;margin:0 auto}
+header.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:18px 14px;border-bottom:1px solid var(--line);margin-bottom:22px}
+.brand{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}.brand b{font-family:var(--f-display);font-weight:700;font-size:20px}.brand span{color:var(--muted);font-size:13px}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0}h1{font-size:26px;font-weight:700}h2{font-size:19px;font-weight:600}h3{font-size:15px;font-weight:600}
+p{margin:0}
+.stack{display:flex;flex-direction:column;gap:16px}.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.muted{color:var(--muted)}.small{font-size:13.5px}
+.eyebrow{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:600}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:20px;min-width:0}
+.btn{font:inherit;font-weight:600;border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:10px 16px;border-radius:8px;cursor:pointer;min-height:42px;text-decoration:none;display:inline-flex;align-items:center}
+.btn:hover{border-color:var(--accent)}.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.danger{color:var(--bad);border-color:var(--bad)}.btn.ghost{background:transparent;border-color:transparent;color:var(--muted)}.btn.ghost:hover{color:var(--fg);border-color:var(--line)}
+.btn[disabled]{opacity:.45;cursor:not-allowed}.btn.tab[aria-current="page"]{background:var(--accent-soft);border-color:var(--accent-soft)}
+.filebtn{position:relative;overflow:hidden}.filebtn input{position:absolute;inset:0;opacity:0;cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+label.f{display:flex;flex-direction:column;gap:6px;font-weight:600;font-size:14px;min-width:0}
+input[type=text],input[type=number],select,textarea{font:inherit;font-weight:400;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--surface);color:var(--fg);min-height:40px;width:100%}
+textarea{min-height:70px;resize:vertical}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.checks{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:4px 14px}
+.checks label,.radios label{display:flex;gap:8px;align-items:flex-start;font-weight:400;font-size:14px;padding:4px 0}
+.checks input,.radios input{margin-top:3px;width:18px;height:18px;flex:none}
+.radios{display:flex;flex-direction:column;gap:2px}
+fieldset{border:0;margin:0;padding:0;min-width:0}legend{padding:0}
+.warnbox{background:var(--warn-soft);border-radius:8px;padding:12px 14px;font-size:14px}.errbox{background:var(--bad-soft);border-radius:8px;padding:12px 14px;font-size:14px}.okbox{background:var(--good-soft);border-radius:8px;padding:12px 14px;font-size:14px}
+.code{font-family:var(--f-mono);font-weight:700;letter-spacing:.1em}
+ul.plain{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.chip{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--sunk);color:var(--muted);white-space:nowrap}
+.chip.ok{background:var(--good-soft);color:var(--good)}.chip.warn{background:var(--warn-soft);color:var(--warn)}.chip.bad{background:var(--bad-soft);color:var(--bad)}
+.qhead{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.progress{height:6px;background:var(--sunk);border-radius:3px;overflow:hidden}.progress i{display:block;height:100%;background:var(--accent);transition:width .2s}
+.items{display:flex;flex-direction:column;gap:12px}
+.item{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+.item.miss{border-color:var(--warn)}.item .q{font-size:17px;line-height:1.45;float:left;width:100%;padding:0}.item .q+*{clear:both}
+.opts{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.opts.o3{grid-template-columns:repeat(3,1fr)}
+.opt{font:inherit;font-size:14.5px;padding:10px 6px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg);cursor:pointer;min-height:52px}
+.opt[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.pager{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:9px 11px;border-bottom:1px solid var(--line);white-space:nowrap;font-variant-numeric:tabular-nums;vertical-align:middle}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;background:var(--sunk)}
+tr:last-child td{border-bottom:0}tbody tr.click{cursor:pointer}tbody tr.click:hover td{background:var(--sunk)}
+tr.grp td{background:var(--sunk);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+tr.sum td{font-weight:600;background:var(--sunk)}
+.hot{color:var(--bad);font-weight:700}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{font:inherit;font-size:13px;border:0;background:var(--surface);color:var(--fg);padding:7px 10px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"][data-v="1"]{background:var(--bad-soft);color:var(--bad);font-weight:700}
+.seg button[aria-pressed="true"][data-v="0"]{background:var(--sunk);color:var(--fg);font-weight:700}
+input.ex{min-width:180px;min-height:34px;padding:6px 9px;font-size:13px}
+.crit,.pq{display:flex;flex-direction:column;gap:6px;padding-top:12px;border-top:1px solid var(--line)}
+.algo{display:flex;flex-wrap:wrap;gap:8px 16px;font-weight:600;font-size:14px}
+.tally{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.tally div{display:flex;justify-content:space-between;background:var(--sunk);border-radius:8px;padding:8px 12px}
+.tally b{font-variant-numeric:tabular-nums}
+.hold{position:relative;overflow:hidden}.hold .fill{position:absolute;inset:0;width:0;background:var(--accent-soft)}.hold span{position:relative}
+.hold.on .fill{width:100%;transition:width 1.4s linear}
+@media (max-width:560px){.opts{grid-template-columns:repeat(2,1fr)}.opts.o3{grid-template-columns:repeat(3,1fr)}h1{font-size:22px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  body{background:#fff;color:#000;padding:0;font-size:11.5pt}
+  header.top,.noprint{display:none!important}
+  .panel,.tablewrap{border-color:#bbb;break-inside:avoid}
+  .report section{break-inside:auto}
+  th{background:#eee!important;color:#000}
+  .chip{border:1px solid #999;background:#fff!important;color:#000!important}
+  .wrap{max-width:none}
+}
+
+.wrap{max-width:640px;padding-block:24px 48px}
+</style>
+</head>
+<body>
+<main class="wrap" id="app"></main>
+<script>
+const EXEC = 'https://script.google.com/macros/s/AKfycbzqji2R53tAv41rTLLhDTJEGzHcyZXThYi72poTAN7SBcFBEYdjUlMtqE8g3HCwP0sdWw/exec';
+const CODE = new URLSearchParams(location.search).get('code') || new URLSearchParams(location.search).get('c') || '';
+/* ================= ΣΑΔΕ – περιεχόμενο ================= */
+const SCALES={
+ FREQ:[['Ποτέ / Σπάνια',0],['Μερικές φορές',1],['Συχνά',2],['Πολύ συχνά',3]],
+ IMP:[['Καθόλου',0],['Λίγο',1],['Αρκετά',2],['Πολύ',3]],
+ AGR:[['Καθόλου',0],['Λίγο',1],['Αρκετά',2],['Πολύ',3]],
+ W2:[['Καθόλου',0],['Μερικές μέρες',1],['Πάνω από τις μισές μέρες',2],['Σχεδόν κάθε μέρα',3]],
+ USE:[['Ποτέ',0],['1–3 φορές τον μήνα',1],['Κάθε εβδομάδα',2],['Σχεδόν καθημερινά',3]],
+ YN:[['Όχι',0],['Ναι',1],['Δεν ξέρω',9]]
+};
+/* 18 συμπτώματα DSM-5-TR: lab = ετικέτα κλινικού, sn = εξεταζόμενος τώρα (ερωτήσεις Δρ. Λυράκου), sc = εξεταζόμενος παιδική ηλικία, in = πληροφοριοδότης τώρα, ic = πληροφοριοδότης παιδική ηλικία */
+const SYM=[
+ {k:'IA1',lab:'Λεπτομέρειες / λάθη απροσεξίας',
+  sn:'Αποτυγχάνετε να δώσετε μεγάλη προσοχή σε λεπτομέρειες ή κάνετε λάθη απροσεξίας κατά την εκτέλεση εργασιακών καθηκόντων, τη σύνταξη αναφορών ή τη διαχείριση γραφειοκρατικών/οικονομικών υποχρεώσεων;',
+  sc:'Έκανα λάθη απροσεξίας στα μαθήματα ή στις ασκήσεις, γιατί δεν πρόσεχα τις λεπτομέρειες.',
+  in:'Κάνει λάθη απροσεξίας ή δεν προσέχει λεπτομέρειες (στη δουλειά, σε χαρτιά, σε λογαριασμούς).',
+  ic:'Έκανε λάθη απροσεξίας στα μαθήματα ή στις ασκήσεις.'},
+ {k:'IA2',lab:'Διατήρηση προσοχής',
+  sn:'Δυσκολεύεστε να διατηρήσετε την προσοχή σας κατά τη διάρκεια παρατεταμένων δραστηριοτήτων, όπως σε πολύωρες συναντήσεις/διαλέξεις, κατά την ανάγνωση πολυσέλιδων εγγράφων ή σε μεγάλες συζητήσεις;',
+  sc:'Δυσκολευόμουν να μείνω συγκεντρωμένος/η στο μάθημα, στο διάβασμα ή στο παιχνίδι.',
+  in:'Δυσκολεύεται να μείνει συγκεντρωμένος/η σε μεγάλες δραστηριότητες (ανάγνωση, συζητήσεις, συναντήσεις).',
+  ic:'Δυσκολευόταν να μείνει συγκεντρωμένος/η στο μάθημα, στο διάβασμα ή στο παιχνίδι.'},
+ {k:'IA3',lab:'Δεν φαίνεται να ακούει',
+  sn:'Φαίνεται να μην ακούτε όταν σας μιλούν απευθείας (π.χ. το μυαλό σας ταξιδεύει αλλού), ακόμα και όταν δεν υπάρχει κάποιο προφανές εξωτερικό ερέθισμα που να σας αποσπά;',
+  sc:'Φαινόταν να μην ακούω όταν μου μιλούσαν (δάσκαλοι, γονείς).',
+  in:'Φαίνεται να μην ακούει όταν του/της μιλάτε απευθείας.',
+  ic:'Φαινόταν να μην ακούει όταν του/της μιλούσαν.'},
+ {k:'IA4',lab:'Ολοκλήρωση υποχρεώσεων',
+  sn:'Αποτυγχάνετε να ακολουθήσετε οδηγίες μέχρι τέλους και να ολοκληρώσετε εργασιακά καθήκοντα, γραφειοκρατικές εκκρεμότητες ή οικιακές υποχρεώσεις (ξεκινάτε εργασίες αλλά χάνετε γρήγορα την εστίασή σας);',
+  sc:'Δεν ολοκλήρωνα τις ασκήσεις ή τις δουλειές που μου ανέθεταν· τις άφηνα στη μέση.',
+  in:'Αφήνει δουλειές και υποχρεώσεις στη μέση.',
+  ic:'Άφηνε ασκήσεις και δουλειές στη μέση.'},
+ {k:'IA5',lab:'Οργάνωση',
+  sn:'Δυσκολεύεστε να οργανώσετε εργασίες και δραστηριότητες (π.χ. δυσκολία στη διαχείριση αλληλουχίας ενεργειών, στην οργάνωση υλικών/αρχείων, στη διαχείριση χρόνου και στην τήρηση προθεσμιών);',
+  sc:'Ήμουν ανοργάνωτος/η (σχολική τσάντα, θρανίο, δωμάτιο, χρόνος για τα μαθήματα).',
+  in:'Δυσκολεύεται να οργανωθεί (χαρτιά, χρόνος, προθεσμίες).',
+  ic:'Ήταν ανοργάνωτος/η (τσάντα, δωμάτιο, χρόνος για τα μαθήματα).'},
+ {k:'IA6',lab:'Αποφυγή νοητικής προσπάθειας',
+  sn:'Αποφεύγετε, αντιπαθείτε ή αναβάλλετε συστηματικά την έναρξη εργασιών που απαιτούν παρατεταμένη και μέγιστη νοητική προσπάθεια (π.χ. προετοιμασία εκθέσεων, συμπλήρωση σύνθετων φορμών/αιτήσεων);',
+  sc:'Απέφευγα ή ανέβαλλα τα μαθήματα και τις εργασίες που ήθελαν πολλή σκέψη.',
+  in:'Αποφεύγει ή αναβάλλει εργασίες που θέλουν πολλή σκέψη.',
+  ic:'Απέφευγε ή ανέβαλλε μαθήματα και εργασίες που ήθελαν πολλή σκέψη.'},
+ {k:'IA7',lab:'Απώλεια αντικειμένων',
+  sn:'Χάνετε συχνά αντικείμενα απαραίτητα για τις καθημερινές σας εργασίες και δραστηριότητες (π.χ. κλειδιά, πορτοφόλι, τηλέφωνο, έγγραφα εργασίας, γυαλιά);',
+  sc:'Έχανα πράγματα (μολύβια, βιβλία, τετράδια, ρούχα, παιχνίδια).',
+  in:'Χάνει πράγματα (κλειδιά, πορτοφόλι, κινητό, έγγραφα).',
+  ic:'Έχανε πράγματα (μολύβια, βιβλία, ρούχα, παιχνίδια).'},
+ {k:'IA8',lab:'Διάσπαση από ερεθίσματα',
+  sn:'Διασπάται η προσοχή σας εύκολα από εξωτερικά ερεθίσματα (ήχους, κινήσεις) ή από άσχετες εσωτερικές σκέψεις;',
+  sc:'Αφαιρούμουν εύκολα από ό,τι γινόταν γύρω μου ή από τις σκέψεις μου.',
+  in:'Αποσπάται εύκολα από ήχους, κινήσεις ή τις σκέψεις του/της.',
+  ic:'Αφαιρούνταν εύκολα.'},
+ {k:'IA9',lab:'Λήθη καθημερινών υποχρεώσεων',
+  sn:'Ξεχνάτε υποχρεώσεις στις καθημερινές σας δραστηριότητες (π.χ. να παρευρεθείτε σε ραντεβού, να πληρώσετε λογαριασμούς, να επιστρέψετε τηλεφωνήματα);',
+  sc:'Ξεχνούσα τις καθημερινές μου υποχρεώσεις (εργασίες για το σπίτι, να φέρω πράγματα στο σχολείο).',
+  in:'Ξεχνά καθημερινές υποχρεώσεις (ραντεβού, πληρωμές, τηλεφωνήματα).',
+  ic:'Ξεχνούσε τις καθημερινές του/της υποχρεώσεις.'},
+ {k:'HI1',lab:'Νευρικές κινήσεις / στριφογύρισμα',
+  sn:'Κινείτε νευρικά τα χέρια ή τα πόδια σας, χτυπάτε τα στυλό/πόδια στο πάτωμα ή στριφογυρίζετε στη θέση σας όταν είστε καθισμένοι;',
+  sc:'Κουνούσα χέρια ή πόδια ή στριφογύριζα στην καρέκλα.',
+  in:'Κουνά νευρικά χέρια ή πόδια ή στριφογυρίζει όταν κάθεται.',
+  ic:'Κουνούσε χέρια ή πόδια ή στριφογύριζε στην καρέκλα.'},
+ {k:'HI2',lab:'Εγκατάλειψη θέσης',
+  sn:'Σηκώνεστε από τη θέση σας σε καταστάσεις όπου αναμένεται να παραμείνετε καθισμένοι (π.χ. κατά τη διάρκεια επαγγελματικών συναντήσεων, διαλέξεων ή κοινωνικών συγκεντρώσεων);',
+  sc:'Σηκωνόμουν από τη θέση μου στην τάξη ή στο τραπέζι, ενώ έπρεπε να κάθομαι.',
+  in:'Σηκώνεται σε περιστάσεις όπου πρέπει να μείνει καθισμένος/η.',
+  ic:'Σηκωνόταν από τη θέση του/της στην τάξη ή στο τραπέζι.'},
+ {k:'HI3',lab:'Εσωτερική ανησυχία (παιδιά: τρέξιμο/σκαρφάλωμα)',
+  sn:'Βιώνετε ένα υποκειμενικό αίσθημα έντονης εσωτερικής ανησυχίας ή σωματικής δυσφορίας όταν αναγκάζεστε να μείνετε ακίνητοι για μεγάλο χρονικό διάστημα;',
+  sc:'Έτρεχα ή σκαρφάλωνα σε στιγμές που δεν ήταν κατάλληλο.',
+  in:'Δείχνει ανήσυχος/η όταν πρέπει να μείνει ακίνητος/η για ώρα.',
+  ic:'Έτρεχε ή σκαρφάλωνε σε ακατάλληλες στιγμές.'},
+ {k:'HI4',lab:'Δυσκολία σε ήσυχες δραστηριότητες',
+  sn:'Δυσκολεύεστε να συμμετέχετε ή να ασχολείστε με δραστηριότητες ελεύθερου χρόνου και ψυχαγωγίας με ήρεμο και ήσυχο τρόπο;',
+  sc:'Δυσκολευόμουν να παίζω ήσυχα.',
+  in:'Δυσκολεύεται να χαλαρώσει με ήσυχες δραστηριότητες.',
+  ic:'Δυσκολευόταν να παίζει ήσυχα.'},
+ {k:'HI5',lab:'«Σαν να τον κινεί μοτέρ»',
+  sn:'Βρίσκεστε σε συνεχή κίνηση ή ενεργείτε σαν να «σας κινεί μοτέρ» (αδυναμία να παραμείνετε ήρεμοι, δυσφορία με την απουσία δραστηριότητας);',
+  sc:'Ήμουν συνέχεια σε κίνηση, «σαν να με κινούσε μοτέρ».',
+  in:'Είναι συνεχώς σε κίνηση, «σαν να τον/την κινεί μοτέρ».',
+  ic:'Ήταν συνέχεια σε κίνηση, «σαν να τον/την κινούσε μοτέρ».'},
+ {k:'HI6',lab:'Υπερβολική ομιλία',
+  sn:'Μιλάτε υπερβολικά πολύ σε κοινωνικές ή επαγγελματικές αλληλεπιδράσεις;',
+  sc:'Μιλούσα υπερβολικά πολύ.',
+  in:'Μιλάει υπερβολικά.',
+  ic:'Μιλούσε υπερβολικά.'},
+ {k:'HI7',lab:'Βιαστικές απαντήσεις',
+  sn:'Απαντάτε βιαστικά/παρορμητικά πριν ολοκληρωθεί η ερώτηση ή συμπληρώνετε τις φράσεις των άλλων χωρίς να περιμένετε να τελειώσουν;',
+  sc:'Έδινα απαντήσεις πριν ολοκληρωθεί η ερώτηση.',
+  in:'Απαντά πριν ολοκληρωθεί η ερώτηση ή τελειώνει τις φράσεις των άλλων.',
+  ic:'Απαντούσε πριν ολοκληρωθεί η ερώτηση.'},
+ {k:'HI8',lab:'Δυσκολία αναμονής σειράς',
+  sn:'Δυσκολεύεστε να περιμένετε τη σειρά σας (π.χ. σε ουρές, στην οδική κυκλοφορία, σε συζητήσεις ή σε συναντήσεις);',
+  sc:'Δυσκολευόμουν να περιμένω τη σειρά μου (στο παιχνίδι, στην ουρά).',
+  in:'Δυσκολεύεται να περιμένει τη σειρά του/της.',
+  ic:'Δυσκολευόταν να περιμένει τη σειρά του/της.'},
+ {k:'HI9',lab:'Διακοπή / παρέμβαση σε άλλους',
+  sn:'Διακόπτετε ή παρεμβαίνετε στις δραστηριότητες των άλλων (π.χ. εισβάλλετε σε συζητήσεις, παιχνίδια ή εργασιακές δραστηριότητες χωρίς να λάβετε άδεια);',
+  sc:'Διέκοπτα ή ενοχλούσα τους άλλους (στις κουβέντες ή στα παιχνίδια τους).',
+  in:'Διακόπτει ή επεμβαίνει σε ό,τι κάνουν οι άλλοι.',
+  ic:'Διέκοπτε ή ενοχλούσε τους άλλους.'}
+];
+const IA=SYM.slice(0,9),HI=SYM.slice(9);
+const VAL=[ /* ερωτήσεις ελέγχου απίθανων απαντήσεων, μέσα στην ενότητα «Συμπτώματα τώρα» */
+ {k:'V1',t:'Χάνετε τον δρόμο μέσα στο ίδιο σας το σπίτι;',bad:v=>v>=2},
+ {k:'V2',t:'Δεν μπορείτε να συγκεντρωθείτε ούτε για ένα δευτερόλεπτο σε οτιδήποτε, ποτέ;',bad:v=>v>=2},
+ {k:'V3',t:'Ξεχνάτε σε ποια χώρα ζείτε;',bad:v=>v>=2}];
+const IMPN=[['IMPN1','Εργασία ή σπουδές'],['IMPN2','Σπίτι και οικογένεια'],['IMPN3','Σχέση με σύντροφο'],['IMPN4','Φίλοι και κοινωνική ζωή'],['IMPN5','Οικονομικά και διοικητικές υποχρεώσεις'],['IMPN6','Ελεύθερος χρόνος'],['IMPN7','Αυτοεικόνα και αυτοπεποίθηση'],['IMPN8','Οδήγηση, ασφάλεια, ατυχήματα'],['IMPN9','Υγεία και αυτοφροντίδα (ύπνος, ραντεβού, φάρμακα)']];
+const IMPC=[['IMPC1','Σχολική επίδοση'],['IMPC2','Συμπεριφορά στο σχολείο'],['IMPC3','Σπίτι και οικογένεια'],['IMPC4','Φίλοι'],['IMPC5','Δραστηριότητες και παιχνίδι'],['IMPC6','Αυτοεικόνα']];
+const ASDI=[
+ ['AS1','A1','Δυσκολεύομαι να καταλάβω πότε είναι η σειρά μου να μιλήσω ή πότε να αλλάξω θέμα σε μια συζήτηση.'],
+ ['AS2','A1','Η κουβεντούλα (small talk) μου φαίνεται δύσκολη ή άσκοπη.'],
+ ['AS3','A2','Δυσκολεύομαι να καταλάβω τι νιώθει κάποιος από το πρόσωπο ή τον τόνο της φωνής του.'],
+ ['AS4','A2','Η βλεμματική επαφή μού είναι άβολη ή πρέπει να τη σκέφτομαι συνειδητά.'],
+ ['AS5','A3','Δυσκολεύομαι να κάνω και να κρατήσω φιλίες, ακόμη κι όταν το θέλω.'],
+ ['AS6','A3','Δεν καταλαβαίνω τους άγραφους κοινωνικούς κανόνες που οι άλλοι φαίνεται να ξέρουν αυτόματα.'],
+ ['AS7','B1','Κάνω επαναλαμβανόμενες, ρυθμικές κινήσεις ή ήχους που με ηρεμούν (π.χ. κούνημα, χτύπημα δαχτύλων με συγκεκριμένο ρυθμό).'],
+ ['AS8','B1','Επαναλαμβάνω φράσεις που άκουσα (π.χ. από ταινίες) ή μιλάω με ασυνήθιστα τυπικό τρόπο.'],
+ ['AS9','B2','Αναστατώνομαι πολύ από μικρές αλλαγές στη ρουτίνα ή στα σχέδιά μου.'],
+ ['AS10','B2','Χρειάζεται να κάνω ορισμένα πράγματα πάντα με τον ίδιο τρόπο ή με την ίδια σειρά.'],
+ ['AS11','B3','Έχω πολύ έντονα ενδιαφέροντα για συγκεκριμένα θέματα, που μένουν τα ίδια για χρόνια.'],
+ ['AS12','B3','Μου είναι δύσκολο να σταματήσω να μιλάω ή να σκέφτομαι το θέμα που με ενδιαφέρει.'],
+ ['AS13','B4','Ορισμένοι ήχοι, φώτα, υφές ή μυρωδιές μού είναι αφόρητοι, ενώ οι άλλοι δεν τους προσέχουν.'],
+ ['AS14','B4','Σε χώρους με πολύ θόρυβο ή κόσμο νιώθω υπερφόρτωση και χρειάζομαι να αποσυρθώ.'],
+ ['AS15','M','Καταβάλλω μεγάλη προσπάθεια να φαίνομαι «όπως οι άλλοι» και μετά νιώθω εξαντλημένος/η.']];
+const ASD_CRIT={A1:'Κοινωνικοσυναισθηματική αμοιβαιότητα',A2:'Μη λεκτική επικοινωνία',A3:'Σχέσεις',B1:'Στερεότυπες / επαναλαμβανόμενες συμπεριφορές',B2:'Ομοιότητα / ρουτίνες',B3:'Περιορισμένα ενδιαφέροντα',B4:'Αισθητηριακή αντιδραστικότητα'};
+
+/* Ερωτηματολόγια ως ενότητες */
+const MODS={
+ SN:{who:'A',title:'Συμπτώματα σήμερα',intro:'Για κάθε ερώτηση, πατήστε πόσο συχνά ισχύει για εσάς <b>τους τελευταίους 6 μήνες</b>. Σκεφτείτε τη δουλειά ή τις σπουδές, το σπίτι και τις σχέσεις σας.',
+  sec:[{t:'Προσοχή και οργάνωση',sc:'FREQ',items:[...IA.slice(0,5).map(s=>[s.k,s.sn]),[VAL[0].k,VAL[0].t],...IA.slice(5).map(s=>[s.k,s.sn])]},
+       {t:'Κινητικότητα και παρορμητικότητα',sc:'FREQ',items:[...HI.slice(0,4).map(s=>[s.k,s.sn]),[VAL[1].k,VAL[1].t],...HI.slice(4).map(s=>[s.k,s.sn]),[VAL[2].k,VAL[2].t]]}]},
+ SC:{who:'A',title:'Η παιδική σας ηλικία',intro:'Σκεφτείτε πώς ήσασταν <b>ως παιδί, από 5 έως 12 ετών</b>, στο σχολείο και στο σπίτι. Αν δεν θυμάστε καλά, σκεφτείτε τι σας έλεγαν οι γονείς και οι δάσκαλοι.',
+  sec:[{t:'Προσοχή (5–12 ετών)',sc:'FREQ',items:IA.map(s=>[s.k,s.sc])},{t:'Κινητικότητα και παρορμητικότητα (5–12 ετών)',sc:'FREQ',items:HI.map(s=>[s.k,s.sc])}]},
+ IMP:{who:'A',title:'Επίδραση στην καθημερινή ζωή',intro:'Πόσο σας δυσκολεύουν οι δυσκολίες προσοχής, ανησυχίας ή παρορμητικότητας σε κάθε τομέα;',
+  sec:[{t:'Σήμερα',sc:'IMP',items:IMPN},{t:'Στην παιδική ηλικία (5–12 ετών)',sc:'IMP',items:IMPC}]},
+ ASD:{who:'A',title:'Κοινωνική επικοινωνία και ρουτίνες',intro:'Πόσο ισχύει για εσάς κάθε πρόταση; Σκεφτείτε πώς είστε γενικά, <b>όχι μόνο τον τελευταίο καιρό</b>.',
+  sec:[{t:'Επικοινωνία και σχέσεις',sc:'AGR',items:ASDI.slice(0,6).map(x=>[x[0],x[2]])},{t:'Ρουτίνες, ενδιαφέροντα, αισθήσεις',sc:'AGR',items:ASDI.slice(6).map(x=>[x[0],x[2]])},
+       {t:'Από πότε',sc:'YN',items:[['AS16','Τα παραπάνω χαρακτηριστικά, όσα ισχύουν για εσάς, υπήρχαν ήδη από την παιδική σας ηλικία;']]}]},
+ DIFF:{who:'A',title:'Γενική υγεία και διάθεση',intro:'Οι ερωτήσεις αυτές βοηθούν τον θεραπευτή να δει την εικόνα σας ολοκληρωμένα. Απαντήστε όσο πιο ειλικρινά μπορείτε.',
+  sec:[{t:'Τις τελευταίες 2 εβδομάδες, πόσο συχνά…',sc:'W2',items:[['D1','Νιώθατε λύπη, κενό ή απελπισία;'],['D2','Είχατε χάσει το ενδιαφέρον ή την ευχαρίστηση για πράγματα που συνήθως σας αρέσουν;'],['X1','Ανησυχούσατε υπερβολικά για πολλά διαφορετικά πράγματα, χωρίς να μπορείτε να σταματήσετε;'],['X2','Νιώθατε σωματική ένταση από άγχος (σφίξιμο, ταχυκαρδία, τρέμουλο);'],['X3','Αποφεύγατε κοινωνικές καταστάσεις από φόβο μήπως σας κρίνουν αρνητικά;'],['D4','Είχατε σκέψεις ότι θα ήταν καλύτερα να μη ζείτε ή να βλάψετε τον εαυτό σας;']]},
+       {t:'Πορεία των δυσκολιών',sc:'YN',items:[['P1','Οι δυσκολίες προσοχής σας υπάρχουν από παιδί, ακόμα και σε περιόδους που ήσασταν ήρεμος/η και καλά στη διάθεση;'],['P2','Οι δυσκολίες συγκέντρωσης ξεκίνησαν για πρώτη φορά στην ενήλικη ζωή σας;'],['P4','Έχετε περάσει περιόδους τουλάχιστον 2 εβδομάδων με έντονη κατάθλιψη;'],['P3','Έχετε περάσει περιόδους τουλάχιστον 4 ημερών με ασυνήθιστα ανεβασμένη διάθεση ή ενέργεια, που χρειαζόσασταν πολύ λιγότερο ύπνο χωρίς να κουράζεστε;'],['P5','Έχετε ζήσει κάποιο τραυματικό γεγονός που ακόμα σας ξαναέρχεται (αναμνήσεις, εφιάλτες) και σας κρατά σε επιφυλακή;']]},
+       {t:'Σχέσεις και εικόνα εαυτού: πόσο ισχύει για εσάς;',sc:'AGR',items:[['BP1','Με πιάνει πανικός στην ιδέα ότι ένα σημαντικό πρόσωπο θα με εγκαταλείψει.'],['BP2','Η εικόνα που έχω για τον εαυτό μου (ποιος/α είμαι, τι θέλω) αλλάζει έντονα και συχνά.'],['BP3','Νιώθω χρόνια ένα εσωτερικό κενό.'],['BP4','Στις στενές μου σχέσεις περνάω από το να θαυμάζω τον άλλον στο να τον απορρίπτω εντελώς.']]},
+       {t:'Αυτοτραυματισμός',sc:'YN',items:[['BP5','Έχετε βλάψει σκόπιμα τον εαυτό σας στο παρελθόν;']]},
+       {t:'Τον τελευταίο μήνα, πόσο συχνά κάνατε χρήση…',sc:'USE',items:[['S1','Αλκοόλ σε ποσότητα που σας ζάλισε ή σας μέθυσε;'],['S2','Κάνναβης;'],['S3','Διεγερτικών χωρίς ιατρική συνταγή (π.χ. κοκαΐνη, αμφεταμίνες, μεθυλφαινιδάτη άλλου ατόμου);'],['S4','Ηρεμιστικών ή υπνωτικών χωρίς συνταγή;']]},
+       {t:'Ύπνος τον τελευταίο μήνα: πόσο ισχύει;',sc:'AGR',items:[['SL1','Δυσκολεύομαι να κοιμηθώ ή ξυπνάω πολλές φορές τη νύχτα.'],['SL2','Ροχαλίζω δυνατά ή μου έχουν πει ότι σταματώ να αναπνέω στον ύπνο.'],['SL3','Νυστάζω πολύ τη μέρα, ακόμα κι αν κοιμήθηκα αρκετές ώρες.']]},
+       {t:'Υγεία',sc:'YN',items:[['SL4','Δουλεύετε σε βάρδιες ή νυχτερινές ώρες;'],['M1','Έχετε επιληψία ή έχετε πάθει κρίσεις;'],['M2','Έχετε χτυπήσει στο κεφάλι με απώλεια αισθήσεων;'],['M3','Έχετε πρόβλημα θυρεοειδούς;'],['M4','Παίρνετε φάρμακα που προκαλούν υπνηλία ή επηρεάζουν τη συγκέντρωση (π.χ. αντιεπιληπτικά, αντιισταμινικά, ηρεμιστικά);'],['M5','Έχετε πρόβλημα ακοής ή όρασης που δεν έχει διορθωθεί;'],['M6','Γεννηθήκατε πρόωρα;']]},
+       {t:'Σχολείο και οικογένεια',sc:'YN',items:[['L1','Στο σχολείο είχατε ιδιαίτερη δυσκολία στην ανάγνωση, τη γραφή ή την ορθογραφία;'],['L2','Στο σχολείο είχατε ιδιαίτερη δυσκολία στα μαθηματικά;'],['L3','Μείνατε στην ίδια τάξη ή χρειαστήκατε ειδική εκπαιδευτική στήριξη;'],['L4','Έχετε επίσημη διάγνωση μαθησιακής δυσκολίας (π.χ. δυσλεξία);'],['F1','Κάποιος γονιός, αδελφός/ή ή παιδί σας έχει διάγνωση ΔΕΠΥ;'],['F2','Κάποιος γονιός, αδελφός/ή ή παιδί σας έχει διάγνωση αυτισμού;']]}]},
+ IN:{who:'P',title:'Συμπεριφορά σήμερα',intro:'Πατήστε πόσο συχνά έχετε παρατηρήσει κάθε συμπεριφορά στο άτομο που αξιολογείται <b>τους τελευταίους 6 μήνες</b>.',
+  sec:[{t:'Προσοχή και οργάνωση',sc:'FREQ',items:IA.map(s=>[s.k,s.in])},{t:'Κινητικότητα και παρορμητικότητα',sc:'FREQ',items:HI.map(s=>[s.k,s.in])}]},
+ IC:{who:'P',title:'Στην παιδική ηλικία',intro:'Σκεφτείτε το άτομο που αξιολογείται <b>όταν ήταν παιδί, 5 έως 12 ετών</b>.',
+  sec:[{t:'Προσοχή (5–12 ετών)',sc:'FREQ',items:IA.map(s=>[s.k,s.ic])},{t:'Κινητικότητα και παρορμητικότητα (5–12 ετών)',sc:'FREQ',items:HI.map(s=>[s.k,s.ic])}]}
+};
+const PATIENT_FLOW=['SN','SC','IMP','ASD','DIFF'];
+
+/* Κλινική συνέντευξη διαφοροδιάγνωσης (από τους οδηγούς Δρ. Λυράκου) */
+const TAGS={ADHD:'ΔΕΠΥ',ASD:'ΔΑΦ',MOOD:'Διαταραχή διάθεσης',ANX:'Αγχώδης διαταραχή',BIP:'Διπολικό φάσμα',BPD:'Οριακή ΔΠ',LATE:'Όψιμη έναρξη'};
+const PQ=[
+ {id:'q1',t:'Απροσεξία σε περιόδους καλής διάθεσης',h:'«Όταν η διάθεσή σας είναι καλή και δεν έχετε άγχος, η δυσκολία να οργανωθείτε και να εστιάσετε παραμένει;»',o:[['Παραμένει η ίδια','ADHD'],['Υποχωρεί σημαντικά','MOOD'],['Ασαφές','']]},
+ {id:'q2',t:'Χρονική πορεία',h:'«Από πότε υπάρχουν οι δυσκολίες και πώς κυμαίνονται στον χρόνο;»',o:[['Χρόνια, σταθερή από την παιδική ηλικία','ADHD'],['Επεισοδιακή, με περιόδους πλήρους βελτίωσης','MOOD'],['Πρώτη εμφάνιση στην ενήλικη ζωή','LATE']]},
+ {id:'q3',t:'Φύση της ανησυχίας',h:'«Όταν νιώθετε ανάγκη να κινηθείτε, τι συμβαίνει μέσα σας;»',o:[['Εσωτερική ενέργεια χωρίς φόβο, ανάγκη για διέγερση','ADHD'],['Αίσθημα απειλής με σωματική διέγερση','ANX'],['Με μειωμένη ανάγκη για ύπνο και ανεβασμένη διάθεση','BIP'],['Αισθητηριακή υπερφόρτωση, ανάγκη απόσυρσης ή ρυθμικές κινήσεις','ASD']]},
+ {id:'q4',t:'Παρορμητικότητα',h:'«Τι νιώθατε αμέσως πριν από την παρορμητική πράξη;»',o:[['Ενθουσιασμός ή βιασύνη χωρίς σκέψη (γνωστική/εκτελεστική)','ADHD'],['Έντονο συναίσθημα μετά από διαπροσωπικό ερέθισμα','BPD'],['Δεν υπάρχει ουσιαστική παρορμητικότητα','']]},
+ {id:'q5',t:'Συναισθηματική αστάθεια',h:'«Πόσο κρατά μια αλλαγή διάθεσης και τι την προκαλεί;»',o:[['Λεπτά έως ώρες, μετά από ματαίωση, γρήγορη ηρεμία','ADHD'],['Έντονη, σχεσιακή, με εξιδανίκευση–απαξίωση','BPD'],['Επεισόδια ημερών ή εβδομάδων','MOOD'],['Έκρηξη ή «κλείσιμο» μετά από υπερφόρτωση','ASD']]},
+ {id:'q6',t:'Κοινωνικές δυσκολίες',h:'«Σε μια κοινωνική κατάσταση, ξέρετε τι «πρέπει» να γίνει;»',o:[['Ξέρει τους κανόνες, αλλά τους χάνει από απροσεξία ή παρορμητικότητα','ADHD'],['Δεν αντιλαμβάνεται διαισθητικά τους άγραφους κανόνες','ASD'],['Αποφεύγει από φόβο αρνητικής κρίσης','ANX'],['Χωρίς σημαντικές δυσκολίες','']]},
+ {id:'q7',t:'Ρουτίνα και αλλαγές',h:'«Πώς νιώθετε με μια σταθερή, επαναλαμβανόμενη καθημερινότητα;»',o:[['Βαριέται, αναζητά καινούργια ερεθίσματα','ADHD'],['Χρειάζεται ομοιότητα, αναστατώνεται έντονα με αλλαγές','ASD'],['Ουδέτερα','']]},
+ {id:'q8',t:'Ενδιαφέροντα και υπερεστίαση',h:'«Υπάρχουν θέματα που σας απορροφούν; Αλλάζουν συχνά;»',o:[['Υπερεστίαση σε ό,τι διεγείρει· τα ενδιαφέροντα εναλλάσσονται','ADHD'],['Σταθερά, περιορισμένα, έντονα ενδιαφέροντα για χρόνια','ASD'],['Τίποτα ιδιαίτερο','']]},
+ {id:'q9',t:'Ομιλία και επικοινωνία',h:'Παρατήρηση στη συνεδρία και αναφορά οικείων.',o:[['Υπερβολική ομιλία, διακοπές, πηδά από θέμα σε θέμα','ADHD'],['Μονόλογοι στο θέμα ενδιαφέροντος, κυριολεξία, ασυνήθιστη προσωδία','ASD'],['Χωρίς ιδιαιτερότητες','']]},
+ {id:'q10',t:'Αισθητηριακό προφίλ',h:'«Σας ενοχλούν ήχοι, φώτα, υφές; Αναζητάτε έντονα ερεθίσματα;»',o:[['Αναζήτηση έντονης διέγερσης','ADHD'],['Υπερ- ή υποαντιδραστικότητα, αποφυγή ερεθισμάτων','ASD'],['Χωρίς ιδιαιτερότητες','']]},
+ {id:'q11',t:'Ταυτότητα και φόβος εγκατάλειψης',h:'«Νιώθετε πανικό στην ιδέα ότι κάποιος σημαντικός θα σας αφήσει; Αλλάζει έντονα η εικόνα σας για τον εαυτό σας;»',o:[['Απουσιάζουν, σταθερή ταυτότητα',''],['Παρόντα','BPD']]},
+ {id:'q12',t:'Ύπνος και ενέργεια',h:'«Υπάρχουν περίοδοι που κοιμάστε 2–3 ώρες και νιώθετε γεμάτος/η ενέργεια;»',o:[['Όχι· χρόνια δυσκολία να «κλείσει» το μυαλό το βράδυ',''],['Ναι, σε διακριτές περιόδους','BIP'],['Αϋπνία μόνο σε περιόδους άγχους ή κατάθλιψης','MOOD']]}
+];
+const ECOND=[['asd','Διαταραχή αυτιστικού φάσματος (6A02)'],['id','Νοητική αναπηρία'],['sld','Ειδική μαθησιακή διαταραχή'],['dep','Καταθλιπτική διαταραχή'],['bip','Διπολική διαταραχή'],['anx','Αγχώδεις διαταραχές'],['ptsd','Μετατραυματικό στρες'],['bpd','Οριακή διαταραχή προσωπικότητας'],['sub','Χρήση ουσιών'],['sleep','Διαταραχές ύπνου'],['psy','Ψυχωσικές διαταραχές'],['med','Ιατρικά ή φαρμακευτικά αίτια']];
+const EOPT=['— Δεν αξιολογήθηκε','Αποκλείστηκε','Συννοσηρότητα','Εξηγεί καλύτερα τα συμπτώματα'];
+const SETTINGS=['Εργασία / σπουδές','Σπίτι / οικογένεια','Σχέσεις / φίλοι','Οικονομικά / διοικητικά','Οδήγηση / ασφάλεια'];
+const BSRC=['Αναφορά γονέων','Σχολικοί έλεγχοι / βαθμολογίες','Αδέλφια ή συγγενείς','Μόνο αυτοαναφορά'];
+const FINAL=['—','ΔΕΠΥ, συνδυασμένη παρουσίαση (ICD-11 6A05.2 · DSM-5-TR F90.2)','ΔΕΠΥ, κυρίως απρόσεκτη παρουσίαση (ICD-11 6A05.0 · DSM-5-TR F90.0)','ΔΕΠΥ, κυρίως υπερκινητική-παρορμητική παρουσίαση (ICD-11 6A05.1 · DSM-5-TR F90.1)','Άλλη καθορισμένη ΔΕΠΥ (ICD-11 6A05.Y · DSM-5-TR F90.8)','Δεν πληρούνται τα κριτήρια ΔΕΠΥ','Εκκρεμεί: χρειάζεται περαιτέρω αξιολόγηση'];
+const ASDFINAL=['—','Δεν υπάρχει ΔΑΦ','Συννοσηρή ΔΑΦ (ICD-11 6A02)','Η ΔΑΦ εξηγεί καλύτερα τα συμπτώματα','Παραπομπή για αξιολόγηση ΔΑΦ (ADOS-2 / ADI-R)'];
+const SEV=['—','Ήπια','Μέτρια','Σοβαρή'];
+const SEX=['Άνδρας','Γυναίκα','Άλλο','Δεν απαντώ'];
+const EDU=['Δημοτικό (ή λιγότερο)','Γυμνάσιο','Λύκειο','ΙΕΚ / μεταδευτεροβάθμια','ΑΕΙ (πτυχίο)','Μεταπτυχιακό','Διδακτορικό'];
+const OCC=['Φοιτητής/τρια','Εργαζόμενος/η','Άνεργος/η','Συνταξιούχος','Οικιακά','Άλλο'];
+const PRIOR=[['none','Καμία'],['adhd','ΔΕΠΥ'],['asd','ΔΑΦ'],['ld','Μαθησιακές δυσκολίες'],['dep','Κατάθλιψη'],['anx','Αγχώδης διαταραχή'],['bip','Διπολική διαταραχή'],['bpd','Διαταραχή προσωπικότητας'],['epi','Επιληψία'],['sub','Χρήση ουσιών'],['other','Άλλη']];
+const REL=['Γονέας','Σύζυγος / σύντροφος','Αδελφός/ή','Παιδί','Φίλος/η','Άλλο'];
+
+/* ================= ΣΑΔΕ – φόρμα γονέα (Google Apps Script) ================= */
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const normCode=s=>String(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch{return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}},del(k){try{localStorage.removeItem(k)}catch{}}};
+const app=document.getElementById('app');
+const D={view:'intro',code:normCode(typeof CODE==='string'?CODE:''),relation:'',sex:'',knewChild:null,IN:{},IC:{},pages:[],pg:0,err:'',miss:false,startedAt:new Date().toISOString()};
+const draftKey=()=>'sade_parent_'+D.code;
+(function restore(){const d=D.code&&store.get(draftKey());if(d)Object.assign(D,d,{view:'intro',err:''})})();
+function saveDraft(){if(D.code)store.set(draftKey(),{relation:D.relation,sex:D.sex,knewChild:D.knewChild,IN:D.IN,IC:D.IC,startedAt:D.startedAt})}
+function buildPages(){const out=[];const add=(m,store)=>MODS[m].sec.forEach(sec=>{for(let i=0;i<sec.items.length;i+=6)out.push({m,store,t:MODS[m].title+' · '+sec.t,intro:i===0&&sec===MODS[m].sec[0]?MODS[m].intro:'',sc:sec.sc,items:sec.items.slice(i,i+6)})});add('IN','IN');if(D.knewChild===1)add('IC','IC');D.pages=out}
+function opt(list,val){return `<option value="">— Επιλέξτε —</option>`+list.map(x=>`<option ${x===val?'selected':''}>${esc(x)}</option>`).join('')}
+function render(){window.scrollTo({top:0});({intro:vIntro,meta:vMeta,q:vQ,sending:vSending,thanks:vThanks})[D.view]()}
+function vIntro(){
+  app.innerHTML=`<div class="stack">
+  <h1>Ερωτηματολόγιο για γονείς</h1>
+  <p>Σας ευχαριστούμε που βοηθάτε στην αξιολόγηση. Οι ερωτήσεις αφορούν τη συμπεριφορά του ατόμου που αξιολογείται, σήμερα και όταν ήταν παιδί. Η συμπλήρωση διαρκεί περίπου <b>10 λεπτά</b>.</p>
+  <div class="panel small stack"><p>Δεν ζητάμε ονόματα. Οι απαντήσεις συνδέονται μόνο με τον κωδικό που σας έδωσε ο θεραπευτής και φτάνουν μόνο στο ιατρείο. Μπορείτε να σταματήσετε όποτε θέλετε.</p></div>
+  <label class="f" for="p_code">Κωδικός<input id="p_code" type="text" class="code" maxlength="8" autocapitalize="characters" autocomplete="off" value="${esc(D.code)}"></label>
+  <label class="checks" style="display:flex" for="p_ok"><input type="checkbox" id="p_ok"> <span>Συμφωνώ να συμπληρώσω το ερωτηματολόγιο και να σταλούν οι απαντήσεις μου στο ιατρείο.</span></label>
+  ${D.err?`<div class="errbox">${esc(D.err)}</div>`:''}
+  <div><button class="btn primary" id="go">Έναρξη</button></div></div>`;
+  document.getElementById('go').onclick=()=>{const c=normCode(document.getElementById('p_code').value);if(c.length<6){D.err='Γράψτε τον κωδικό των 6 χαρακτήρων που σας έστειλε ο θεραπευτής.';return render()}
+    if(!document.getElementById('p_ok').checked){D.err='Για να συνεχίσετε, τσεκάρετε ότι συμφωνείτε.';return render()}
+    if(c!==D.code){D.code=c;const d=store.get(draftKey());if(d)Object.assign(D,d)}D.err='';D.view='meta';render()};
+}
+function vMeta(){
+  app.innerHTML=`<div class="stack"><span class="eyebrow">Κωδικός <span class="code">${esc(D.code)}</span></span><h1>Λίγα στοιχεία για εσάς</h1>
+  <label class="f" for="p_rel">Ποια είναι η σχέση σας με το άτομο που αξιολογείται;<select id="p_rel">${opt(REL,D.relation)}</select></label>
+  <label class="f" for="p_sex">Φύλο σας<select id="p_sex">${opt(SEX,D.sex)}</select></label>
+  <label class="f" for="p_kc">Γνωρίζατε το άτομο όταν ήταν 5–12 ετών;<select id="p_kc"><option value="">— Επιλέξτε —</option><option value="1" ${D.knewChild===1?'selected':''}>Ναι</option><option value="0" ${D.knewChild===0?'selected':''}>Όχι</option></select></label>
+  ${D.err?`<div class="errbox">${esc(D.err)}</div>`:''}
+  <div class="pager"><button class="btn" id="back">Πίσω</button><button class="btn primary" id="go">Συνέχεια</button></div></div>`;
+  document.getElementById('back').onclick=()=>{D.view='intro';D.err='';render()};
+  document.getElementById('go').onclick=()=>{D.relation=document.getElementById('p_rel').value;D.sex=document.getElementById('p_sex').value;const kc=document.getElementById('p_kc').value;
+    if(!D.relation||kc===''){D.err='Απαντήστε στη σχέση σας και στο αν γνωρίζατε το άτομο ως παιδί.';return render()}
+    D.knewChild=+kc;if(D.knewChild===0)D.IC={};D.err='';buildPages();D.pg=0;D.view='q';saveDraft();render()};
+}
+function vQ(){
+  const p=D.pages[D.pg],a=D[p.store],opts=SCALES[p.sc];
+  const tot=D.pages.reduce((n,x)=>n+x.items.length,0),done=D.pages.reduce((n,x)=>n+x.items.filter(([k])=>D[x.store][k]!=null).length,0);
+  app.innerHTML=`<div class="stack"><span class="eyebrow">Σελίδα ${D.pg+1} από ${D.pages.length}</span><div class="progress"><i style="width:${done/tot*100}%"></i></div>
+  <h2>${esc(p.t)}</h2>${p.intro?`<div class="panel small">${p.intro}</div>`:''}
+  <div class="items">${p.items.map(([k,t])=>`<fieldset class="item ${D.miss&&a[k]==null?'miss':''}" id="it_${k}"><legend class="q">${esc(t)}</legend><div class="opts">${opts.map(([l,v])=>`<button type="button" class="opt" data-k="${k}" data-v="${v}" aria-pressed="${a[k]===v}">${esc(l)}</button>`).join('')}</div></fieldset>`).join('')}</div>
+  ${D.err?`<div class="errbox">${esc(D.err)}</div>`:''}
+  <div class="pager"><button class="btn" id="back">Πίσω</button><button class="btn primary" id="go">${D.pg<D.pages.length-1?'Επόμενη σελίδα':'Αποστολή απαντήσεων'}</button></div></div>`;
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{a[b.dataset.k]=+b.dataset.v;b.parentElement.querySelectorAll('.opt').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));document.getElementById('it_'+b.dataset.k).classList.remove('miss');saveDraft()});
+  document.getElementById('back').onclick=()=>{D.err='';if(D.pg===0)D.view='meta';else D.pg--;render()};
+  document.getElementById('go').onclick=()=>{const miss=p.items.filter(([k])=>a[k]==null);if(miss.length){D.miss=true;D.err=`Απαντήστε σε όλες τις ερωτήσεις (λείπουν ${miss.length}).`;render();document.getElementById('it_'+miss[0][0]).scrollIntoView({block:'center'});return}
+    D.miss=false;D.err='';if(D.pg<D.pages.length-1){D.pg++;render()}else submit()};
+}
+function vSending(){app.innerHTML='<div class="stack"><h1>Αποστολή…</h1><p class="muted">Μην κλείσετε τη σελίδα.</p></div>'}
+function vThanks(){app.innerHTML='<div class="stack"><div class="okbox">Οι απαντήσεις σας στάλθηκαν στο ιατρείο.</div><h1>Ευχαριστούμε πολύ!</h1><p>Μπορείτε να κλείσετε αυτή τη σελίδα.</p></div>'}
+function submit(){
+  D.view='sending';render();
+  const payload={code:D.code,relation:D.relation,sex:D.sex,knewChild:D.knewChild,IN:D.IN,IC:D.knewChild===1?D.IC:{},startedAt:D.startedAt};
+  const fail=m=>{D.view='q';D.err='Η αποστολή δεν έγινε ('+m+'). Οι απαντήσεις σας κρατήθηκαν· ελέγξτε τη σύνδεση στο διαδίκτυο και πατήστε ξανά «Αποστολή».';render()};
+  fetch(EXEC,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(Object.assign({type:'informant'},payload))})
+   .then(r=>r.json()).then(j=>{if(j&&j.ok){store.del(draftKey());D.view='thanks';render()}else fail((j&&j.error)||'σφάλμα διακομιστή')})
+   .catch(()=>fail('σφάλμα σύνδεσης'));
+}
+render();
+
+</script>
+</body>
+</html>
